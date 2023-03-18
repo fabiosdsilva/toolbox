@@ -1,0 +1,24 @@
+- name: Instalação do Zsh
+  hosts: local
+  connection: local 
+  tasks:
+    - name: Instalar o pacote zsh
+      apt:
+        name: zsh
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Instalar o plugin zsh-autosuggestions
+      git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions.git
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+    - name: Instalar o plugin zsh-syntax-highlighting
+      git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+    - name: Copiar o arquivo de configuração do Zsh
+      template:
+        src: zshrc.j2
+        dest: ~/.zshrc

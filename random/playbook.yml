@@ -1,0 +1,51 @@
+---
+- name: Instalação de NVM, Node.js v18, VirtualBox e DBeaver
+  hosts: local
+  connection: local
+  become: yes
+  tasks:
+    - name: Instalar dependências
+      apt:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Instalar NVM
+      shell: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+        source ~/.bashrc
+      args:
+        executable: /bin/bash
+
+    - name: Instalar Node.js v18
+      shell: |
+        source ~/.nvm/nvm.sh
+        nvm install 18
+        nvm alias default 18
+      args:
+        executable: /bin/bash
+
+    - name: Instalar VirtualBox
+      apt_key:
+        url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+        state: present
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
+        state: present
+      apt:
+        name: virtualbox-6.1
+        state: present
+
+    - name: Instalar DBeaver
+      apt_key:
+        url: https://dbeaver.io/debs/dbeaver.gpg.key
+        state: present
+      apt_repository:
+        repo: "deb https://dbeaver.io/debs/dbeaver-ce /"
+        state: present
+      apt:
+        name: dbeaver-ce
+        state: present
